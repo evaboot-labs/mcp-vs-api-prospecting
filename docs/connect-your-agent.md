@@ -20,7 +20,11 @@ Write your API key into `.env` as `EVABOOT_API_KEY`. You find it in [dash.evaboo
 
 **Claude (web and desktop app):** *Settings > Connectors > Add custom connector*: name `Evaboot`, URL `https://mcp.evaboot.com/mcp`. Sign in to Evaboot and approve.
 
-**Claude Code:** sign in with the same Claude account and the connector is there. Or start Claude Code from this folder: the repo's `.mcp.json` uses the key in `.env`.
+**Claude Code:** sign in with the same Claude account and the connector is there. Or load the key into your shell, then start Claude Code from this folder, so the repo's `.mcp.json` can read it:
+
+```bash
+set -a; source .env; set +a; claude
+```
 
 **Codex, Cursor:** add `https://mcp.evaboot.com/mcp` as an HTTP MCP server with the header `Authorization: Bearer <key>`.
 

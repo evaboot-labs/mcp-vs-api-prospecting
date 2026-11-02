@@ -21,10 +21,11 @@ BASE = "https://api.evaboot.com/v1"
 def key():
     if os.environ.get("EVABOOT_API_KEY"):
         return os.environ["EVABOOT_API_KEY"]
-    for line in (ROOT / ".env").read_text().splitlines():
+    env = ROOT / ".env"
+    for line in (env.read_text().splitlines() if env.exists() else []):
         if line.startswith("EVABOOT_API_KEY="):
             return line.split("=", 1)[1].strip()
-    sys.exit("EVABOOT_API_KEY missing: add it to .env")
+    sys.exit("EVABOOT_API_KEY missing: copy .env.example to .env and add your key")
 
 
 LOG = []
@@ -38,9 +39,15 @@ def call(method, path, body=None):
     t = time.time()
     try:
         with urllib.request.urlopen(req, timeout=120) as r:
-            code, data = r.status, json.loads(r.read() or b"{}")
+            code, raw = r.status, r.read()
     except urllib.error.HTTPError as e:
-        code, data = e.code, json.loads(e.read() or b"{}")
+        code, raw = e.code, e.read()
+    except urllib.error.URLError as e:  # network error: code 0, retried by the poll loop
+        code, raw = 0, json.dumps({"error": str(e.reason)}).encode()
+    try:
+        data = json.loads(raw or b"{}")
+    except ValueError:  # an HTML gateway page instead of JSON
+        data = {"error": raw[:200].decode(errors="replace")}
     LOG.append({"call": f"{method} {path.split('?')[0]}", "status": code, "seconds": round(time.time() - t, 2)})
     return code, data
 
@@ -69,13 +76,18 @@ def export(url, name, poll_every):
         sys.exit(f"extraction refused ({code}): {job}")
     xid = job["extraction_id"]
     print("extraction:", xid)
+    retries = 0
     while True:
         code, res = call("GET", f"/extractions/{xid}/")
         if code == 200:
             break
-        if code != 202:
-            sys.exit(f"poll failed ({code}): {res}")
-        print(f"  {res.get('status')} {res.get('progress')}%")
+        if code in (0, 502, 503, 504) and retries < 5:  # transient: wait and poll again
+            retries += 1
+            print(f"  {code or 'network error'}, retry {retries}/5")
+        elif code != 202:
+            sys.exit(f"poll failed ({code}): {res}. Read it later with GET /v1/extractions/{xid}/")
+        else:
+            print(f"  {res.get('status')} {res.get('progress')}%")
         time.sleep(poll_every)
     leads = res.get("prospects", [])
     save("api-leads.json", leads)

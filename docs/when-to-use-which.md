@@ -12,7 +12,7 @@ One Sales Navigator lead list of 9 sales leaders, exported through both paths on
 | Calls | 5 tool calls | 4 HTTP calls |
 | Time to rows | 26 s | 12 s |
 | Credits | 9 | 9 |
-| Code written | none | 76 lines |
+| Code written | none | about 100 lines |
 
 Every email and email status matched. The data is the same: only the path changes.
 

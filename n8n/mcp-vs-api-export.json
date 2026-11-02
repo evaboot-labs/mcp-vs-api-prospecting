@@ -8,7 +8,7 @@
         "height": 340,
         "color": 5
       },
-      "id": "0b588d75-4f48-444d-9064-3028629d07b5",
+      "id": "7a8a703d-8905-4d1c-ad93-189595ad34be",
       "name": "Note 0",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -24,7 +24,7 @@
         "height": 320,
         "color": 4
       },
-      "id": "614f2f77-96ed-463b-bca2-36d2f050b81f",
+      "id": "d755bb79-c6c2-49b6-931a-1b749441ccf1",
       "name": "Note 1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -40,7 +40,7 @@
         "height": 300,
         "color": 6
       },
-      "id": "e4050f2c-d5ea-4c61-94c8-892f68f29e3f",
+      "id": "63a4dc65-18d2-4a73-ac87-eebeb7cb93f7",
       "name": "Note 2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -51,7 +51,7 @@
     },
     {
       "parameters": {},
-      "id": "fe6a327e-b2c6-434f-8648-1df435ec35ee",
+      "id": "99dd1ee8-0002-44e8-8657-986f62263a5d",
       "name": "Run",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -85,7 +85,7 @@
           ]
         }
       },
-      "id": "2d5317b6-e8d8-40be-ad09-97ca14487978",
+      "id": "f2064b19-0790-4f27-beb1-ccdf30c05bc5",
       "name": "Your settings",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
@@ -110,7 +110,7 @@
           "timeout": 120000
         }
       },
-      "id": "47a48190-88e1-41ad-a44d-e74d4b2330a7",
+      "id": "a8080818-1389-42ad-b184-5847207bffe3",
       "name": "MCP: export",
       "type": "@n8n/n8n-nodes-langchain.mcpClient",
       "typeVersion": 1.1,
@@ -129,7 +129,7 @@
       "parameters": {
         "amount": 30
       },
-      "id": "c77e79a7-54ca-4d32-92d0-4a8328440dce",
+      "id": "8540f168-b34f-438a-a271-7ed042d61d58",
       "name": "MCP: wait 30 s",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
@@ -137,7 +137,7 @@
         700,
         -40
       ],
-      "webhookId": "57139b69-3111-415b-8f3e-3488625e32d0"
+      "webhookId": "571f1d36-4989-4eb8-a331-f6129ed8b40c"
     },
     {
       "parameters": {
@@ -155,7 +155,7 @@
           "timeout": 120000
         }
       },
-      "id": "9d5e2b5c-a472-4a7b-95e8-04bb2e8c96c4",
+      "id": "e432ee27-aa4c-4f26-bdf8-913231ee3045",
       "name": "MCP: results",
       "type": "@n8n/n8n-nodes-langchain.mcpClient",
       "typeVersion": 1.1,
@@ -191,7 +191,7 @@
           "combinator": "and"
         }
       },
-      "id": "54abe053-c66a-4445-9af2-96b6a3464df0",
+      "id": "83ca4a55-8dfa-41fd-9ac8-7026e7cf18ec",
       "name": "MCP: finished?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -213,7 +213,7 @@
           ]
         }
       },
-      "id": "7561f00e-fb0f-418b-a188-f3157e9360b2",
+      "id": "4e8cbda9-fc58-45c2-9a1b-691da23c24ed",
       "name": "MCP: done at",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
@@ -233,7 +233,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ linkedin_url: $('Your settings').first().json.list_url, search_name: 'MCP vs API test (n8n, API)' }) }}"
       },
-      "id": "9c3c4ffc-5c16-4b97-bc77-025b2b9805fe",
+      "id": "86cb5f1e-26df-4f27-a68d-23326dfc0077",
       "name": "API: start export",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -252,7 +252,7 @@
       "parameters": {
         "amount": 30
       },
-      "id": "36ffbf7f-fc19-442a-871e-d19d501e4292",
+      "id": "3ba4cddf-7658-434f-93a9-ae474718bee6",
       "name": "API: wait 30 s",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
@@ -260,7 +260,7 @@
         700,
         260
       ],
-      "webhookId": "76991115-a186-4e66-8075-13ee7ce79744"
+      "webhookId": "624125d8-2988-48ce-8e64-5667293986f1"
     },
     {
       "parameters": {
@@ -277,7 +277,7 @@
           }
         }
       },
-      "id": "9cb98d7f-a38c-4366-9046-61fd8c8d5fab",
+      "id": "a43b1d2b-dfca-41c0-9e75-d36fb50d7438",
       "name": "API: poll",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -313,7 +313,7 @@
           "combinator": "and"
         }
       },
-      "id": "e9feeb14-025f-4813-b23a-7d9d44d2189d",
+      "id": "f44322fd-849c-4705-a1bd-eaf203853722",
       "name": "API: finished?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -335,7 +335,7 @@
           ]
         }
       },
-      "id": "525f64dd-e17c-40eb-87ce-406dd3fcbbfc",
+      "id": "c52bf074-5428-42c7-abd4-264aa81bf278",
       "name": "API: done at",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
@@ -346,11 +346,98 @@
     },
     {
       "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "r",
+              "leftValue": "={{ ['FAILED', 'ERROR', 'CANCELLED'].includes(($json.structuredContent?.result || $json.result || {}).status) }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "c93126e2-f534-41d0-8519-fa8e32f84aa6",
+      "name": "MCP: still running?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'Evaboot export failed: ' + JSON.stringify($json.structuredContent?.result || $json.result) }}"
+      },
+      "id": "1a4bc0da-d2c2-4034-b2f0-d7d284307258",
+      "name": "MCP: failed",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "r",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 202,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "9a6ef540-19e1-4a06-bfa0-c34c5e66287b",
+      "name": "API: still running?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'Evaboot API ' + $json.statusCode + ': ' + JSON.stringify($json.body) }}"
+      },
+      "id": "802f092e-f9b8-4b39-8f48-77d908a3b410",
+      "name": "API: failed",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        460
+      ]
+    },
+    {
+      "parameters": {
         "mode": "chooseBranch",
         "chooseBranchMode": "waitForAll",
         "output": "empty"
       },
-      "id": "9cdb228f-f6b6-4791-a2ad-3a9e3c5bfe4e",
+      "id": "d8bf235d-d0b2-47f6-82fb-cbac40599beb",
       "name": "Wait for both",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.1,
@@ -363,7 +450,7 @@
       "parameters": {
         "jsCode": "\n// One row per branch: what came back and how long it took.\nconst s = $('Your settings').first().json;\nconst started = new Date(s.started_at);\nconst row = (path, leads, endedAt) => ({\n  path,\n  leads: leads.length,\n  emails_found: leads.filter(l => l['Email']).length,\n  safe_emails: leads.filter(l => l['Email Status'] === 'safe').length,\n  seconds: Math.round((new Date(endedAt) - started) / 1000),\n});\nconst r = $('MCP: results').last().json;\nconst mcpLeads = r.structuredContent?.result?.prospects || r.result?.prospects || [];\nconst apiLeads = $('API: poll').last().json.body.prospects || [];\nreturn [row('MCP', mcpLeads, $('MCP: done at').first().json.done_at),\n        row('API', apiLeads, $('API: done at').first().json.done_at)].map(json => ({ json }));\n"
       },
-      "id": "0d36fdc1-72ba-43c4-95a9-c958082ed92e",
+      "id": "1f650abb-1546-41fb-be1e-1bb4e295ec7d",
       "name": "Compare",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -445,7 +532,7 @@
         ],
         [
           {
-            "node": "MCP: wait 30 s",
+            "node": "MCP: still running?",
             "type": "main",
             "index": 0
           }
@@ -496,7 +583,43 @@
         ],
         [
           {
+            "node": "API: still running?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP: still running?": {
+      "main": [
+        [
+          {
+            "node": "MCP: wait 30 s",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MCP: failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: still running?": {
+      "main": [
+        [
+          {
             "node": "API: wait 30 s",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "API: failed",
             "type": "main",
             "index": 0
           }

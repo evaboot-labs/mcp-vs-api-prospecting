@@ -123,6 +123,20 @@ node("API: finished?", "n8n-nodes-base.if", 2.2, {"conditions": {"options": {"ca
 node("API: done at", "n8n-nodes-base.set", 3.4, {"assignments": {"assignments": [
     {"id": "d", "name": "done_at", "type": "string", "value": "={{ $now.toISO() }}"}]}}, [1360, 240])
 
+# A failed export must stop the run, not loop forever.
+node("MCP: still running?", "n8n-nodes-base.if", 2.2, {"conditions": {"options": {"caseSensitive": True, "typeValidation": "loose"},
+     "conditions": [{"id": "r", "leftValue": "={{ ['FAILED', 'ERROR', 'CANCELLED'].includes(($json.structuredContent?.result || $json.result || {}).status) }}",
+                     "rightValue": False, "operator": {"type": "boolean", "operation": "false", "singleValue": True}}],
+     "combinator": "and"}}, [1140, -200])
+node("MCP: failed", "n8n-nodes-base.stopAndError", 1,
+     {"errorMessage": "={{ 'Evaboot export failed: ' + JSON.stringify($json.structuredContent?.result || $json.result) }}"}, [1360, -220])
+node("API: still running?", "n8n-nodes-base.if", 2.2, {"conditions": {"options": {"caseSensitive": True, "typeValidation": "loose"},
+     "conditions": [{"id": "r", "leftValue": "={{ $json.statusCode }}", "rightValue": 202,
+                     "operator": {"type": "number", "operation": "equals"}}],
+     "combinator": "and"}}, [1140, 440])
+node("API: failed", "n8n-nodes-base.stopAndError", 1,
+     {"errorMessage": "={{ 'Evaboot API ' + $json.statusCode + ': ' + JSON.stringify($json.body) }}"}, [1360, 460])
+
 node("Wait for both", "n8n-nodes-base.merge", 3.1, {"mode": "chooseBranch", "chooseBranchMode": "waitForAll",
      "output": "empty"}, [1580, 120])
 code("Compare", SUMMARY_JS, [1800, 120])
@@ -132,8 +146,12 @@ for a, b in [("Run", "Your settings"), ("Your settings", "MCP: export"), ("MCP: 
              ("Your settings", "API: start export"), ("API: start export", "API: wait 30 s"),
              ("API: wait 30 s", "API: poll"), ("API: poll", "API: finished?"), ("API: finished?", "API: done at")]:
     link(a, b)
-link("MCP: finished?", "MCP: wait 30 s", out=1)   # not done yet: wait and ask again
-link("API: finished?", "API: wait 30 s", out=1)   # 202: wait and poll again
+link("MCP: finished?", "MCP: still running?", out=1)
+link("MCP: still running?", "MCP: wait 30 s")        # not done yet: wait and ask again
+link("MCP: still running?", "MCP: failed", out=1)
+link("API: finished?", "API: still running?", out=1)
+link("API: still running?", "API: wait 30 s")        # 202: wait and poll again
+link("API: still running?", "API: failed", out=1)    # 402, 409, 429...: stop with the error
 link("MCP: done at", "Wait for both")
 connections.setdefault("API: done at", {"main": [[]]})["main"][0].append(
     {"node": "Wait for both", "type": "main", "index": 1})
