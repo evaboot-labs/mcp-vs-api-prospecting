@@ -1,0 +1,544 @@
+{
+  "name": "MCP vs API: the same Evaboot export, both ways",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## MCP vs API: the same export, both ways\n\nSet **Your settings**: a Sales Navigator **lead list** URL with 10 leads or fewer.\n\nOne credential for both branches: **Bearer Auth** with your Evaboot API key (dash.evaboot.com > Integrations > API).\n\nEach branch costs 1 credit per lead. Setup guide: docs/n8n.md",
+        "width": 380,
+        "height": 340,
+        "color": 5
+      },
+      "id": "0b588d75-4f48-444d-9064-3028629d07b5",
+      "name": "Note 0",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Through the MCP server\nTwo MCP Client calls. `max_results` caps the export, so a big search cannot overspend.",
+        "width": 900,
+        "height": 320,
+        "color": 4
+      },
+      "id": "614f2f77-96ed-463b-bca2-36d2f050b81f",
+      "name": "Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Through the REST API\nYou write the HTTP calls and the polling loop yourself. The API exports the **whole** search or list: there is no cap.",
+        "width": 1300,
+        "height": 300,
+        "color": 6
+      },
+      "id": "e4050f2c-d5ea-4c61-94c8-892f68f29e3f",
+      "name": "Note 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        420,
+        110
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "fe6a327e-b2c6-434f-8648-1df435ec35ee",
+      "name": "Run",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "u",
+              "name": "list_url",
+              "type": "string",
+              "value": "https://www.linkedin.com/sales/lists/people/REPLACE_WITH_YOUR_LIST_ID"
+            },
+            {
+              "id": "n",
+              "name": "max_results",
+              "type": "number",
+              "value": 10
+            },
+            {
+              "id": "t",
+              "name": "started_at",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "2d5317b6-e8d8-40be-ad09-97ca14487978",
+      "name": "Your settings",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://mcp.evaboot.com/mcp",
+        "authentication": "bearerAuth",
+        "tool": {
+          "__rl": true,
+          "mode": "list",
+          "value": "export_sn_search_or_list",
+          "cachedResultName": "export_sn_search_or_list"
+        },
+        "inputMode": "json",
+        "jsonInput": "={{ JSON.stringify({ search_url: $('Your settings').first().json.list_url, name: 'MCP vs API test (n8n, MCP)', max_results: $('Your settings').first().json.max_results }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "47a48190-88e1-41ad-a44d-e74d4b2330a7",
+      "name": "MCP: export",
+      "type": "@n8n/n8n-nodes-langchain.mcpClient",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        -40
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "",
+          "name": "Evaboot (Bearer API key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "id": "c77e79a7-54ca-4d32-92d0-4a8328440dce",
+      "name": "MCP: wait 30 s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        -40
+      ],
+      "webhookId": "57139b69-3111-415b-8f3e-3488625e32d0"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://mcp.evaboot.com/mcp",
+        "authentication": "bearerAuth",
+        "tool": {
+          "__rl": true,
+          "mode": "list",
+          "value": "get_export",
+          "cachedResultName": "get_export"
+        },
+        "inputMode": "json",
+        "jsonInput": "={{ JSON.stringify({ extraction_id: $('MCP: export').first().json.structuredContent?.result?.extraction_id || $('MCP: export').first().json.result?.extraction_id }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "9d5e2b5c-a472-4a7b-95e8-04bb2e8c96c4",
+      "name": "MCP: results",
+      "type": "@n8n/n8n-nodes-langchain.mcpClient",
+      "typeVersion": 1.1,
+      "position": [
+        920,
+        -40
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "",
+          "name": "Evaboot (Bearer API key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "f",
+              "leftValue": "={{ ($json.structuredContent?.result || $json.result || {}).status }}",
+              "rightValue": "EXECUTED",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "54abe053-c66a-4445-9af2-96b6a3464df0",
+      "name": "MCP: finished?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d",
+              "name": "done_at",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "7561f00e-fb0f-418b-a188-f3157e9360b2",
+      "name": "MCP: done at",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.evaboot.com/v1/extractions/url/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ linkedin_url: $('Your settings').first().json.list_url, search_name: 'MCP vs API test (n8n, API)' }) }}"
+      },
+      "id": "9c3c4ffc-5c16-4b97-bc77-025b2b9805fe",
+      "name": "API: start export",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        260
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "",
+          "name": "Evaboot (Bearer API key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "id": "36ffbf7f-fc19-442a-871e-d19d501e4292",
+      "name": "API: wait 30 s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        260
+      ],
+      "webhookId": "76991115-a186-4e66-8075-13ee7ce79744"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.evaboot.com/v1/extractions/{{ $('API: start export').first().json.extraction_id }}/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "9cb98d7f-a38c-4366-9046-61fd8c8d5fab",
+      "name": "API: poll",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        260
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "",
+          "name": "Evaboot (Bearer API key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "s",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "e9feeb14-025f-4813-b23a-7d9d44d2189d",
+      "name": "API: finished?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d",
+              "name": "done_at",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "525f64dd-e17c-40eb-87ce-406dd3fcbbfc",
+      "name": "API: done at",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "chooseBranchMode": "waitForAll",
+        "output": "empty"
+      },
+      "id": "9cdb228f-f6b6-4791-a2ad-3a9e3c5bfe4e",
+      "name": "Wait for both",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1580,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// One row per branch: what came back and how long it took.\nconst s = $('Your settings').first().json;\nconst started = new Date(s.started_at);\nconst row = (path, leads, endedAt) => ({\n  path,\n  leads: leads.length,\n  emails_found: leads.filter(l => l['Email']).length,\n  safe_emails: leads.filter(l => l['Email Status'] === 'safe').length,\n  seconds: Math.round((new Date(endedAt) - started) / 1000),\n});\nconst r = $('MCP: results').last().json;\nconst mcpLeads = r.structuredContent?.result?.prospects || r.result?.prospects || [];\nconst apiLeads = $('API: poll').last().json.body.prospects || [];\nreturn [row('MCP', mcpLeads, $('MCP: done at').first().json.done_at),\n        row('API', apiLeads, $('API: done at').first().json.done_at)].map(json => ({ json }));\n"
+      },
+      "id": "0d36fdc1-72ba-43c4-95a9-c958082ed92e",
+      "name": "Compare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1800,
+        120
+      ]
+    }
+  ],
+  "connections": {
+    "Run": {
+      "main": [
+        [
+          {
+            "node": "Your settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Your settings": {
+      "main": [
+        [
+          {
+            "node": "MCP: export",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "API: start export",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP: export": {
+      "main": [
+        [
+          {
+            "node": "MCP: wait 30 s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP: wait 30 s": {
+      "main": [
+        [
+          {
+            "node": "MCP: results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP: results": {
+      "main": [
+        [
+          {
+            "node": "MCP: finished?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP: finished?": {
+      "main": [
+        [
+          {
+            "node": "MCP: done at",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MCP: wait 30 s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: start export": {
+      "main": [
+        [
+          {
+            "node": "API: wait 30 s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: wait 30 s": {
+      "main": [
+        [
+          {
+            "node": "API: poll",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: poll": {
+      "main": [
+        [
+          {
+            "node": "API: finished?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: finished?": {
+      "main": [
+        [
+          {
+            "node": "API: done at",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "API: wait 30 s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP: done at": {
+      "main": [
+        [
+          {
+            "node": "Wait for both",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: done at": {
+      "main": [
+        [
+          {
+            "node": "Wait for both",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait for both": {
+      "main": [
+        [
+          {
+            "node": "Compare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
