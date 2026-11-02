@@ -1,0 +1,13 @@
+{
+  "name": "mcp-vs-api-prospecting",
+  "version": "1.0.0",
+  "description": "Export the same Sales Navigator list through the Evaboot MCP server and the Evaboot API, time both, and compare the leads, emails and calls.",
+  "author": { "name": "Evaboot", "url": "https://evaboot.com" },
+  "homepage": "https://evaboot.com/blog/mcp-vs-api",
+  "repository": "https://github.com/evaboot-labs/mcp-vs-api-prospecting",
+  "license": "MIT",
+  "privacyPolicyUrl": "https://evaboot.com/privacy-policy",
+  "keywords": ["mcp", "api", "sales-navigator", "evaboot", "n8n", "benchmark", "lead-generation"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "evaboot-labs-mcp-vs-api-prospecting",
+  "owner": { "name": "Evaboot", "url": "https://evaboot.com" },
+  "metadata": {
+    "description": "The same Sales Navigator export through the Evaboot MCP and the Evaboot API, compared."
+  },
+  "plugins": [
+    {
+      "name": "mcp-vs-api-prospecting",
+      "source": "./",
+      "description": "Export the same Sales Navigator list through the Evaboot MCP server and the Evaboot API, time both, and compare the leads, emails and calls."
+    }
+  ]
+}

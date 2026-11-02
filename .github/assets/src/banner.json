@@ -1,0 +1,7 @@
+{"layout": "flow", "eyebrow": "evaboot-labs · mcp-vs-api-prospecting", "headline": "MCP or API? Test it.",
+ "subline": "The same Sales Navigator export, through an AI Agent and through code.",
+ "nodes": [{"label": "01 · Input", "title": "One lead list", "caption": "10 leads or fewer"},
+           {"label": "02 · MCP", "title": "AI Agent", "caption": "Evaboot tools, plain words"},
+           {"label": "03 · API", "title": "Your script", "caption": "4 HTTP calls, no AI"},
+           {"label": "04 · Result", "title": "comparison.md", "caption": "Leads, emails, seconds"}],
+ "spec": "server <em>mcp.evaboot.com/mcp</em> · api <em>api.evaboot.com/v1</em>"}
