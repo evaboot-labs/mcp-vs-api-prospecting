@@ -1,0 +1,6 @@
+.env
+data/
+results/*-leads.json
+results/*-run.json
+results/api-build.json
+.DS_Store
